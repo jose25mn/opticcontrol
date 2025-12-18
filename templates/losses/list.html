@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Perdas{% endblock %}
+{% block page_title %}Perdas por vencimento{% endblock %}
+{% block page_subtitle %}Lotes vencidos com saldo em estoque{% endblock %}
+
+{% block content %}
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Lote</th>
+        <th>Validade</th>
+        <th>Saldo</th>
+        <th>Prejuízo estimado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="row-critical">
+        <td>{{ r.batch.product }}</td>
+        <td>{{ r.batch.lot_code }}</td>
+        <td>{{ r.batch.expires_at|date:"d/m/Y" }}</td>
+        <td><strong>{{ r.saldo }}</strong></td>
+        <td>R$ {{ r.loss_value|floatformat:2 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">Nenhuma perda registrada 🎉</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
