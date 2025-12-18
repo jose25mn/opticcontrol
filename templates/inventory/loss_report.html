@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Relatório de Perdas{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/loss.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>🧯 Relatório de Perdas</h1>
+
+<p class="subtitle">
+  Controle de itens descartados por vencimento ou ajuste manual.
+</p>
+
+<div class="card summary">
+  <strong>Total de unidades perdidas:</strong>
+  <span class="big-number">{{ total_qty }}</span>
+</div>
+
+<div class="card full">
+  <table>
+    <tr>
+      <th>Data</th>
+      <th>Produto</th>
+      <th>Lote</th>
+      <th>Qtd</th>
+      <th>Usuário</th>
+      <th>Observação</th>
+    </tr>
+    {% for m in losses %}
+    <tr>
+      <td>{{ m.created_at|date:"d/m/Y H:i" }}</td>
+      <td>{{ m.batch.product }}</td>
+      <td>{{ m.batch.lot_code|default:m.batch.id }}</td>
+      <td class="danger">{{ m.qty }}</td>
+      <td>{{ m.created_by|default:"-" }}</td>
+      <td>{{ m.note }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6">Nenhuma perda registrada.</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

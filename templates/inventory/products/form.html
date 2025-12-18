@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Preencha os dados do produto{% endblock %}
+
+{% block content %}
+<div class="card">
+
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="grid">
+      <div class="field">
+        <label>Marca</label>
+        {{ form.brand }}
+      </div>
+
+      <div class="field">
+        <label>Modelo</label>
+        {{ form.model }}
+      </div>
+
+      <div class="field">
+        <label>Grau esférico (SPH)</label>
+        {{ form.degree_sph }}
+      </div>
+
+      <div class="field">
+        <label>Valor de venda</label>
+        {{ form.sale_price }}
+      </div>
+
+      <div class="field">
+        <label>Estoque mínimo</label>
+        {{ form.min_stock }}
+      </div>
+
+      <div class="field">
+        <label>Status</label>
+        {{ form.active }}
+        <div class="help">Produto disponível para uso</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:18px;">
+      <button type="submit" class="btn btn-primary">
+        💾 Salvar
+      </button>
+
+      <a href="{% url 'inventory:product_list' %}" class="btn btn-ghost">
+        Cancelar
+      </a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

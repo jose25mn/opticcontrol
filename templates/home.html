@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Início | Estoque{% endblock %}
+{% block page_title %}Início{% endblock %}
+{% block page_subtitle %}Acesso rápido às funções do sistema{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <a class="card btn-ghost" href="/dashboard/" style="text-decoration:none;">
+    <div class="kpi">
+      <div>
+        <h3>Monitoramento</h3>
+        <div class="num">Dashboard</div>
+      </div>
+      <div class="tag ok">📊</div>
+    </div>
+    <p class="help">Alertas de validade e baixo estoque.</p>
+  </a>
+
+  <a class="card btn-ghost" href="/produtos/" style="text-decoration:none;">
+    <div class="kpi">
+      <div>
+        <h3>Cadastro</h3>
+        <div class="num">Produtos</div>
+      </div>
+      <div class="tag warn">📦</div>
+    </div>
+    <p class="help">Marca, modelo, SPH, valor e mínimo.</p>
+  </a>
+
+  <a class="card btn-ghost" href="/fefo/saida/" style="text-decoration:none;">
+    <div class="kpi">
+      <div>
+        <h3>Operação</h3>
+        <div class="num">Saída FEFO</div>
+      </div>
+      <div class="tag danger">📤</div>
+    </div>
+    <p class="help">Dá baixa priorizando o lote que vence primeiro.</p>
+  </a>
+
+  <a class="card btn-ghost" href="/relatorios/perdas/" style="text-decoration:none;">
+    <div class="kpi">
+      <div>
+        <h3>Relatórios</h3>
+        <div class="num">Perdas</div>
+      </div>
+      <div class="tag warn">🧾</div>
+    </div>
+    <p class="help">Histórico de descartes e ajustes.</p>
+  </a>
+</div>
+{% endblock %}

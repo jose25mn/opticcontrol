@@ -1,0 +1,38 @@
+.subtitle {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.big-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--vermelho);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--cinza-claro);
+  text-align: left;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+td.danger {
+  color: var(--vermelho);
+  font-weight: 600;
+}

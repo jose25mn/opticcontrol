@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Entrada de Lote{% endblock %}
+{% block page_title %}Entrada de Lote{% endblock %}
+{% block page_subtitle %}Registrar entrada de estoque com validade e custo{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="grid">
+      <div class="field">
+        <label>Produto</label>
+        {{ form.product }}
+        <div class="help">Selecione o produto (SPH) para entrada.</div>
+      </div>
+
+      <div class="field">
+        <label>Código do lote</label>
+        {{ form.lot_code }}
+      </div>
+
+      <div class="field">
+        <label>Validade</label>
+        {{ form.expires_at }}
+        <div class="help">{{ form.expires_at.help_text }}</div>
+      </div>
+
+      <div class="field">
+        <label>Quantidade</label>
+        {{ form.qty }}
+      </div>
+
+      <div class="field">
+        <label>Custo unitário</label>
+        {{ form.unit_price }}
+        <div class="help">{{ form.unit_price.help_text }}</div>
+      </div>
+
+      <div class="field">
+        <label>Observação</label>
+        {{ form.note }}
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:18px;">
+      <button type="submit" class="btn btn-primary">📦 Registrar entrada</button>
+      <a href="/produtos/" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

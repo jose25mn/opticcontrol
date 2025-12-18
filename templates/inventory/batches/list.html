@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Lotes (Estoque){% endblock %}
+{% block page_title %}Controle de Lotes{% endblock %}
+{% block page_subtitle %}Entrada e acompanhamento por validade (FEFO){% endblock %}
+
+{% block content %}
+<div class="card">
+
+  <!-- Header -->
+  <div class="list-header">
+    <div>
+      <div class="section-title">Lotes (Estoque)</div>
+      <div class="help">Aqui tu controla entradas, validade e saldo por lote</div>
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+      <a class="btn btn-ghost" href="{% url 'inventory:product_list' %}">📋 Produtos (cadastro)</a>
+      <a class="btn btn-primary" href="{% url 'inventory:batch_entry' %}">📦 Nova entrada</a>
+    </div>
+  </div>
+
+  <!-- Toolbar / Filters -->
+  <div class="filter-bar" style="margin-top:14px;">
+    <form method="get" class="filters">
+      <div class="search">
+        <span class="search-ico">🔎</span>
+        <input
+          type="text"
+          name="q"
+          placeholder="Buscar por produto ou lote…"
+          value="{{ request.GET.q }}"
+        />
+      </div>
+
+      <div class="selects">
+        <select name="status" class="select">
+          <option value="">Status (todos)</option>
+          <option value="ok" {% if request.GET.status == "ok" %}selected{% endif %}>OK</option>
+          <option value="expiring" {% if request.GET.status == "expiring" %}selected{% endif %}>Vencendo</option>
+          <option value="expired" {% if request.GET.status == "expired" %}selected{% endif %}>Vencido</option>
+          <option value="zero" {% if request.GET.status == "zero" %}selected{% endif %}>Zerado</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" type="submit">Filtrar</button>
+        <a class="btn btn-ghost" href="/lotes/">Limpar</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="kpi-row" style="margin-top:14px;">
+    <div class="kpi">
+      <div class="kpi-title">Total</div>
+      <div class="kpi-value">{{ rows|length }}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-title">OK</div>
+      <div class="kpi-value">
+        {% with 0 as c %}
+        {% for r in rows %}{% if r.status == "ok" %}{% widthratio 1 1 1 %}{% endif %}{% endfor %}
+        {% endwith %}
+        <!-- fallback visual: se tu quiser contagem real, faço na view -->
+        —
+      </div>
+      <div class="kpi-help">Lotes saudáveis</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-title">Vencendo</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-help">≤ 30 dias</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-title">Vencido</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-help">Ação imediata</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-title">Zerado</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-help">Sem saldo</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div style="margin-top:14px;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Lote</th>
+          <th>Validade</th>
+          <th>Saldo</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for r in rows %}
+        <tr class="
+          {% if r.status == 'expired' %}row-critical{% endif %}
+          {% if r.status == 'expiring' %}row-warn{% endif %}
+          {% if r.status == 'zero' %}row-muted{% endif %}
+        ">
+          <td>
+            <strong>{{ r.batch.product }}</strong>
+          </td>
+          <td>{{ r.batch.lot_code }}</td>
+          <td>{{ r.batch.expires_at|date:"d/m/Y" }}</td>
+          <td><strong>{{ r.saldo }}</strong></td>
+          <td>
+            {% if r.status == "ok" %}<span class="badge ok">OK</span>{% endif %}
+            {% if r.status == "expiring" %}<span class="badge warn">Vencendo</span>{% endif %}
+            {% if r.status == "expired" %}<span class="badge off">Vencido</span>{% endif %}
+            {% if r.status == "zero" %}<span class="badge info">Zerado</span>{% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">
+            <div class="empty">
+              <div class="empty-title">Nenhum lote cadastrado</div>
+              <div class="help">Registre uma entrada para começar a controlar o estoque por validade (FEFO).</div>
+              <a class="btn btn-primary" href="{% url 'inventory:batch_entry' %}">📦 Registrar primeira entrada</a>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

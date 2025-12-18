@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+  --azul-escuro: #1f3c88;
+  --azul: #2f80ed;
+  --ciano: #56ccf2;
+  --verde: #27ae60;
+  --amarelo: #f2c94c;
+  --vermelho: #eb5757;
+  --cinza-claro: #f5f7fa;
+  --texto: #2c2c2c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: var(--cinza-claro);
+  color: var(--texto);
+}
+
+.topbar {
+  background: linear-gradient(90deg, var(--azul), var(--ciano));
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+.topbar nav a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  padding: 24px;
+}

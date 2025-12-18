@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Saída FEFO | Estoque{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/fefo.css' %}">
+{% endblock %}
+
+{% block content %}
+<<div class="card">
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="field">
+      <label>Produto</label>
+      {{ form.product }}
+      <div class="help">Escolha o produto (SPH) e informe a quantidade.</div>
+    </div>
+
+    <div class="field">
+      <label>Quantidade</label>
+      {{ form.qty }}
+    </div>
+
+    <div class="field">
+      <label>Observação</label>
+      {{ form.note }}
+    </div>
+
+    <button class="btn btn-primary" type="submit">📤 Registrar saída</button>
+  </form>
+</div>
+{% endblock %}

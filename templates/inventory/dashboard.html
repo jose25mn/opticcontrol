@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Estoque{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Visão geral do estoque e alertas{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <div class="card">
+    <div class="kpi">
+      <div>
+        <h3>Vencidos</h3>
+        <div class="num">{{ expired_batches|length }}</div>
+      </div>
+      <div class="tag danger">⛔</div>
+    </div>
+    <div class="help">Lotes já fora da validade.</div>
+  </div>
+
+  <div class="card">
+    <div class="kpi">
+      <div>
+        <h3>Vencendo ({{ expire_days }} dias)</h3>
+        <div class="num">{{ expiring_batches|length }}</div>
+      </div>
+      <div class="tag warn">⚠️</div>
+    </div>
+    <div class="help">Atenção: planejar reposição.</div>
+  </div>
+
+  <div class="card">
+    <div class="kpi">
+      <div>
+        <h3>Baixo estoque</h3>
+        <div class="num">{{ low_stock_products|length }}</div>
+      </div>
+      <div class="tag warn">📉</div>
+    </div>
+    <div class="help">Produtos abaixo do mínimo.</div>
+  </div>
+
+  <div class="card">
+    <div class="kpi">
+      <div>
+        <h3>Ações rápidas</h3>
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="/fefo/saida/">📤 Saída</a>
+          <a class="btn btn-ghost" href="/produtos/novo/">+ Produto</a>
+        </div>
+      </div>
+      <div class="tag ok">⚡</div>
+    </div>
+    <div class="help">Operações do dia-a-dia.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:18px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+    <div>
+      <div class="page-title" style="font-size:16px;">Últimas movimentações</div>
+      <div class="help">Registro de entradas, saídas e perdas.</div>
+    </div>
+  </div>
+
+  <table class="table">
+    <tr>
+      <th>Data</th>
+      <th>Tipo</th>
+      <th>Produto</th>
+      <th>Qtd</th>
+      <th>Usuário</th>
+    </tr>
+    {% for m in last_movements %}
+    <tr>
+      <td>{{ m.created_at|date:"d/m/Y H:i" }}</td>
+      <td>{{ m.get_kind_display }}</td>
+      <td>{{ m.batch.product }}</td>
+      <td>{{ m.qty }}</td>
+      <td>{{ m.created_by|default:"-" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Sem movimentações.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
