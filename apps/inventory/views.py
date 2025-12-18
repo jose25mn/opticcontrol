@@ -37,8 +37,6 @@ def fefo_issue(request):
 
     return render(request, "inventory/fefo_issue.html", {"form": form})
 
-
-@login_required
 def loss_report(request):
     qs = (
         StockMovement.objects
@@ -52,3 +50,39 @@ def loss_report(request):
         "losses": qs[:200],
         "total_qty": total_qty
     })
+
+def loss_report(request):
+    today = now().date()
+
+    batches = (
+        StockBatch.objects
+        .filter(expires_at__lt=today)
+        .annotate(
+            saldo=Sum(
+                "movements__qty",
+                filter=None
+            )
+        )
+    )
+
+    rows = []
+
+    for b in batches:
+        saldo = b.movements.aggregate(
+            total=Sum("qty")
+        )["total"] or 0
+
+        if saldo > 0:
+            rows.append({
+                "batch": b,
+                "saldo": saldo,
+                "loss_value": saldo * b.movements.filter(kind="IN").first().unit_price,
+            })
+
+    return render(
+        request,
+        "inventory/losses/list.html",
+        {
+            "rows": rows,
+        }
+    )
