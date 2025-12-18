@@ -52,32 +52,41 @@ def loss_report(request):
     })
 
 def loss_report(request):
-    today = now().date()
-
-    batches = (
-        StockBatch.objects
-        .filter(expires_at__lt=today)
-        .annotate(
-            saldo=Sum(
-                "movements__qty",
-                filter=None
-            )
-        )
-    )
+    today = timezone.now().date()
 
     rows = []
 
-    for b in batches:
-        saldo = b.movements.aggregate(
-            total=Sum("qty")
-        )["total"] or 0
+    expired_batches = StockBatch.objects.filter(
+        expires_at__lt=today
+    )
 
-        if saldo > 0:
-            rows.append({
-                "batch": b,
-                "saldo": saldo,
-                "loss_value": saldo * b.movements.filter(kind="IN").first().unit_price,
-            })
+    for batch in expired_batches:
+        saldo = (
+            StockMovement.objects
+            .filter(batch=batch)
+            .aggregate(total=Sum("qty"))
+            ["total"]
+        ) or 0
+
+        if saldo <= 0:
+            continue
+
+        # pega o primeiro preço de entrada (IN)
+        entrada = (
+            StockMovement.objects
+            .filter(batch=batch, kind="IN")
+            .order_by("created_at")
+            .first()
+        )
+
+        unit_price = entrada.unit_price if entrada else 0
+        loss_value = saldo * unit_price
+
+        rows.append({
+            "batch": batch,
+            "saldo": saldo,
+            "loss_value": loss_value,
+        })
 
     return render(
         request,
